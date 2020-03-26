@@ -3,7 +3,7 @@ import TextField from '@material-ui/core/TextField';
 
 function App() {
   const searchForGifs = text => {
-    fetch(`http://api.giphy.com/v1/gifs/search?api_key=${process.env.REACT_APP_GIPHY_API_KEY}&q=${text}`, {
+    fetch(`https://api.giphy.com/v1/gifs/search?api_key=${process.env.REACT_APP_GIPHY_API_KEY}&q=${text}`, {
       "method": "GET",
       "headers": {}
     })
