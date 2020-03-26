@@ -1,36 +1,18 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
+import getImgurGifs from './lib/imgur';
+import getGiphyGifs from './lib/giphy';
 
 function App() {
   const searchForGifs = text => {
-    fetch(`https://api.giphy.com/v1/gifs/search?api_key=${process.env.REACT_APP_GIPHY_API_KEY}&q=${text}`, {
-      "method": "GET",
-      "headers": {}
-    })
-      .then(response => {
-        return response.json();
-      })
+    getGiphyGifs(text)
       .then(data => {
-        console.log('giphy: ', data);
-      })
-      .catch(err => {
-        console.log(err);
+        console.log(data);
       });
 
-    fetch(`https://api.imgur.com/3/gallery/search/top/all?q=${text}&q_type=gif`, {
-      "method": "GET",
-      "headers": {
-        "authorization": `Client-ID ${process.env.REACT_APP_IMGUR_CLIENT_ID}`
-      }
-    })
-      .then(response => {
-        return response.json();
-      })
+    getImgurGifs(text)
       .then(data => {
-        console.log('imgur: ', data);
-      })
-      .catch(err => {
-        console.log(err);
+        console.log(data);
       });
   };
 
