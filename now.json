@@ -1,0 +1,8 @@
+{
+  "build": {
+    "env": {
+      "REACT_APP_IMGUR_CLIENT_ID": "@imgur_client_id",
+      "REACT_APP_GIPHY_API_KEY": "@giphy_api_key"
+    }
+  }
+}
