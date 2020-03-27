@@ -72,26 +72,31 @@ function App() {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-    getGiphyGifs(searchText)
-      .then(resp => {
-        const gifResults = resp.data;
+    if (searchText.length) {
+      setLoading(true);
+      getGiphyGifs(searchText)
+        .then(resp => {
+          const gifResults = resp.data;
 
-        if (gifResults.length) {
-          setGifResults(gifResults.map(gifData => {
-            return {
-              id: gifData.id,
-              thumbnail: `https://media3.giphy.com/media/${gifData.id}/200_s.gif`,
-              url: `https://media.giphy.com/media/${gifData.id}/giphy.gif`
-            };
-          }));
-        }
-        else {
-          setGifResults([]);
-        }
+          if (gifResults.length) {
+            setGifResults(gifResults.map(gifData => {
+              return {
+                id: gifData.id,
+                thumbnail: `https://media3.giphy.com/media/${gifData.id}/200_s.gif`,
+                url: `https://media.giphy.com/media/${gifData.id}/giphy.gif`
+              };
+            }));
+          }
+          else {
+            setGifResults([]);
+          }
 
-        setLoading(false);
-      });
+          setLoading(false);
+        });
+    }
+    else {
+      setGifResults([]);
+    }
   }, [searchText]);
 
   return (
