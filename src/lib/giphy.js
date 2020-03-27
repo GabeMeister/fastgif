@@ -6,8 +6,16 @@ const getGiphyGifs = text => {
     .then(response => {
       return response.json();
     })
-    .catch(err => {
-      console.log(err);
+    .then(resp => {
+      const gifResults = resp.data || [];
+
+      return gifResults.map(gifData => {
+        return {
+          id: gifData.id,
+          thumbnail: `https://media3.giphy.com/media/${gifData.id}/200_s.gif`,
+          url: `https://media.giphy.com/media/${gifData.id}/giphy.gif`
+        };
+      });
     });
 };
 

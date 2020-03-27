@@ -5,12 +5,14 @@ import ClipboardJS from 'clipboard';
 
 import SearchboxWrapper from './components/wrappers/SearchboxWrapper';
 import SearchResultWrapper from './components/wrappers/SearchResultWrapper';
+import ErrorMessage from './components/ErrorMessage';
 import ImagePreview from './components/ImagePreview';
 import getGiphyGifs from './lib/giphy';
 
 function App() {
   const [searchText, setSearchText] = useState('');
   const [gifResults, setGifResults] = useState([]);
+  const [errorOccurred, setErrorOccurred] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -20,30 +22,24 @@ function App() {
   useEffect(() => {
     if (searchText.length) {
       setLoading(true);
+
       getGiphyGifs(searchText)
-        .then(resp => {
-          const gifResults = resp.data;
-
-          if (gifResults.length) {
-            setGifResults(gifResults.map(gifData => {
-              return {
-                id: gifData.id,
-                thumbnail: `https://media3.giphy.com/media/${gifData.id}/200_s.gif`,
-                url: `https://media.giphy.com/media/${gifData.id}/giphy.gif`
-              };
-            }));
-          }
-          else {
-            setGifResults([]);
-          }
-
+        .then(gifData => {
+          setGifResults(gifData);
           setLoading(false);
+          setErrorOccurred(false);
+        })
+        .catch(err => {
+          setGifResults([]);
+          setLoading(false);
+          setErrorOccurred(true);
         });
     }
     else {
       setGifResults([]);
+      setErrorOccurred(false);
     }
-  }, [searchText]);
+  }, [searchText, setLoading, setGifResults, setErrorOccurred]);
 
   return (
     <div>
@@ -62,7 +58,10 @@ function App() {
         {loading && (
           <CircularProgress />
         )}
-        {gifResults.slice(0, 20).map(gif => {
+        {errorOccurred && (
+          <ErrorMessage />
+        )}
+        {!!gifResults.length && gifResults.slice(0, 20).map(gif => {
           return (
             <a href={gif.url} key={gif.url} target="_blank" rel="noopener noreferrer">
               <ImagePreview
