@@ -5,11 +5,19 @@ const getImgurGifs = text => {
       "authorization": `Client-ID ${process.env.REACT_APP_IMGUR_CLIENT_ID}`
     }
   })
-    .then(response => {
-      return response.json();
+    .then(resp => {
+      return resp.json();
     })
-    .catch(err => {
-      console.log(err);
+    .then(resp => {
+      const gifResults = resp.data || [];
+
+      return gifResults.map(gifData => {
+        return {
+          id: gifData.id,
+          thumbnail: `https://i.imgur.com/${gifData.id}t.jpg`,
+          url: `http://i.imgur.com/${gifData.id}.gif`
+        };
+      });
     });
 };
 

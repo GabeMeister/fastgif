@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import TextField from '@material-ui/core/TextField';
 import ClipboardJS from 'clipboard';
 
@@ -8,8 +11,10 @@ import SearchResultWrapper from './components/wrappers/SearchResultWrapper';
 import ErrorMessage from './components/ErrorMessage';
 import ImagePreview from './components/ImagePreview';
 import getGiphyGifs from './lib/giphy';
+import getImgurGifs from './lib/imgur';
 
 function App() {
+  const [api, setApi] = useState('giphy');
   const [searchText, setSearchText] = useState('');
   const [gifResults, setGifResults] = useState([]);
   const [errorOccurred, setErrorOccurred] = useState([]);
@@ -22,15 +27,19 @@ function App() {
   useEffect(() => {
     if (searchText.length) {
       setLoading(true);
+      setGifResults([]);
 
-      getGiphyGifs(searchText)
+      const queryApi = api === 'giphy'
+        ? getGiphyGifs
+        : getImgurGifs;
+
+      queryApi(searchText)
         .then(gifData => {
           setGifResults(gifData);
           setLoading(false);
           setErrorOccurred(false);
         })
         .catch(err => {
-          setGifResults([]);
           setLoading(false);
           setErrorOccurred(true);
         });
@@ -39,11 +48,31 @@ function App() {
       setGifResults([]);
       setErrorOccurred(false);
     }
-  }, [searchText, setLoading, setGifResults, setErrorOccurred]);
+  }, [searchText, api]);
 
   return (
     <div>
       <SearchboxWrapper>
+        <RadioGroup row>
+          <FormControlLabel
+            checked={api === 'giphy'}
+            value="giphy"
+            control={<Radio />}
+            label="Giphy"
+            onChange={() => {
+              setApi('giphy');
+            }}
+          />
+          <FormControlLabel
+            checked={api === 'imgur'}
+            value="imgur"
+            control={<Radio />}
+            label="Imgur"
+            onChange={() => {
+              setApi('imgur');
+            }}
+          />
+        </RadioGroup>
         <TextField
           id="searchbox"
           label="Search for gifs"

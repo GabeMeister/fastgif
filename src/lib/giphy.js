@@ -3,8 +3,8 @@ const getGiphyGifs = text => {
     "method": "GET",
     "headers": {}
   })
-    .then(response => {
-      return response.json();
+    .then(resp => {
+      return resp.json();
     })
     .then(resp => {
       const gifResults = resp.data || [];
